@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import date
 
 app = FastAPI()
 
@@ -10,17 +11,21 @@ class Cliente(BaseModel):
     email: str
     edad: int
 
-class ClienteUpdate(BaseModel):
-    nombre: Optional[str] = None
-    email: Optional[str] = None
-    edad: Optional[int] = None
+class Factura(BaseModel):
+    id: int
+    fecha: date
+    cliente_id: int
 
-# Datos en memoria
-lista_clientes = [
-    Cliente(id=1, nombre="Lady", email="lady@gmail.com", edad=22),
-    Cliente(id=2, nombre="Luis", email="luis@gmail.com", edad=19),
-    Cliente(id=3, nombre="Ana", email="ana@gmail.com", edad=23)
-]
+class Transaccion(BaseModel):
+    id: int
+    cantidad: int
+    vr_unitario: float
+    descripcion: str
+    factura_id: int
+
+lista_clientes = []
+lista_facturas = []
+lista_transacciones = []
 
 @app.get("/clientes", response_model=List[Cliente])
 def listar_clientes():
@@ -33,16 +38,25 @@ def obtener_cliente(cliente_id: int):
             return cliente
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente no encontrado")
 
-@app.put("/clientes/{cliente_id}", response_model=Cliente)
-def actualizar_cliente(cliente_id: int, datos: ClienteUpdate):
-    for cliente in lista_clientes:
-        if cliente.id == cliente_id:
-            # Actualizar solo los campos enviados
-            if datos.nombre is not None:
-                cliente.nombre = datos.nombre
-            if datos.email is not None:
-                cliente.email = datos.email
-            if datos.edad is not None:
-                cliente.edad = datos.edad
-            return cliente
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente no encontrado")
+@app.post("/clientes", response_model=Cliente, status_code=status.HTTP_201_CREATED)
+def crear_cliente(cliente: Cliente):
+    lista_clientes.append(cliente)
+    return cliente
+
+@app.get("/facturas", response_model=List[Factura])
+def listar_facturas():
+    return lista_facturas
+
+@app.post("/facturas", response_model=Factura, status_code=status.HTTP_201_CREATED)
+def crear_factura(factura: Factura):
+    lista_facturas.append(factura)
+    return factura
+
+@app.get("/transacciones", response_model=List[Transaccion])
+def listar_transacciones():
+    return lista_transacciones
+
+@app.post("/transacciones", response_model=Transaccion, status_code=status.HTTP_201_CREATED)
+def crear_transaccion(transaccion: Transaccion):
+    lista_transacciones.append(transaccion)
+    return transaccion
