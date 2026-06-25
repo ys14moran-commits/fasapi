@@ -60,3 +60,9 @@ def listar_transacciones():
 def crear_transaccion(transaccion: Transaccion):
     lista_transacciones.append(transaccion)
     return transaccion
+@app.get("/facturas/{factura_id}", response_model=Factura)
+def obtener_factura(factura_id: int):
+    for factura in lista_facturas:
+        if factura.id == factura_id:
+            return factura
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Factura no encontrada")
