@@ -1,21 +1,21 @@
-from fastapi import FastAPI, status
-from database import engine, Base
-from routers import clientes_router, facturas_router, transacciones_router
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-# Crear tablas al iniciar
-Base.metadata.create_all(bind=engine)
+app = FastAPI()
 
-app = FastAPI(
-    title="API Facturación",
-    description="Gestión de Clientes, Facturas y Transacciones",
-    version="1.0.0",
-)
+lista_clientes = [
+    {"id": 1, "nombre": "Lady", "email": "lady@gmail.com", "edad": 22},
+    {"id": 2, "nombre": "Luis", "email": "luis@gmail.com", "edad": 19},
+    {"id": 3, "nombre": "Ana", "email": "ana@gmail.com", "edad": 23}
+]
 
-# Incluir los routers
-app.include_router(clientes_router)
-app.include_router(facturas_router)
-app.include_router(transacciones_router)
+@app.get("/clientes")
+def listar_clientes():
+    return lista_clientes
 
-@app.get("/")
-def root():
-    return {"message": "API de Facturación funcionando correctamente"}
+@app.get("/clientes/{cliente_id}")
+def obtener_cliente(cliente_id: int):
+    for cliente in lista_clientes:
+        if cliente["id"] == cliente_id:
+            return cliente
+    return {"error": "Cliente no encontrado"}
