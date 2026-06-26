@@ -4,10 +4,16 @@ from typing import List, Optional
 from datetime import date
 from fastapi import FastAPI
 from routers import clientes_router
+from fastapi import FastAPI
+from routers import clientes_router, facturas_router, transacciones_router
+
 
 app = FastAPI()
 
 app.include_router(clientes_router)
+app.include_router(clientes_router)
+app.include_router(facturas_router)
+app.include_router(transacciones_router)
 
 @app.get("/")
 def root():
