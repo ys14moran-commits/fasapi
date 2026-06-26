@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import List, Optional
-from .factura import FacturaResponse
+from typing import Optional
 
 class ClienteBase(BaseModel):
     nombre: str
@@ -17,7 +16,5 @@ class ClienteUpdate(BaseModel):
 
 class ClienteResponse(ClienteBase):
     id: int
-    facturas: List[FacturaResponse] = []
-
     class Config:
         from_attributes = True

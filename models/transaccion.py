@@ -1,21 +1,12 @@
-from pydantic import BaseModel
+from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy.orm import relationship
+from database import Base
 
-class Transaccion(BaseModel):
-    id: int
-    cantidad: int
-    vr_unitario: float
-    descripcion: str
-    factura_id: int
-
-class TransaccionBase(BaseModel):
-    cantidad: int
-    vr_unitario: float
-    descripcion: str
-
-class TransaccionResponse(BaseModel):
-    id: int
-    cantidad: int
-    vr_unitario: float
-    descripcion: str
-    factura_id: int
-    total: float = 0.0
+class Transaccion(Base):
+    __tablename__ = "transacciones"
+    id = Column(Integer, primary_key=True, index=True)
+    cantidad = Column(Integer, nullable=False)
+    vr_unitario = Column(Float, nullable=False)
+    descripcion = Column(String, nullable=False)
+    factura_id = Column(Integer, ForeignKey("facturas.id"), nullable=False)
+    factura = relationship("Factura", back_populates="transacciones")

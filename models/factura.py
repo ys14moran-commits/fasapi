@@ -1,14 +1,11 @@
-from pydantic import BaseModel
-from datetime import date
-from typing import List, Optional
-from models.transaccion import TransaccionBase
+from sqlalchemy import Column, Integer, Date, ForeignKey
+from sqlalchemy.orm import relationship
+from database import Base
 
-class Factura(BaseModel):
-    id: int
-    fecha: date
-    cliente_id: int
-
-class FacturaCreate(BaseModel):
-    fecha: date
-    cliente_id: int
-    transacciones: List[TransaccionBase] = []
+class Factura(Base):
+    __tablename__ = "facturas"
+    id = Column(Integer, primary_key=True, index=True)
+    fecha = Column(Date, nullable=False)
+    cliente_id = Column(Integer, ForeignKey("clientes.id"), nullable=False)
+    cliente = relationship("Cliente", back_populates="facturas")
+    transacciones = relationship("Transaccion", back_populates="factura", cascade="all, delete-orphan")
