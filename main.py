@@ -66,3 +66,43 @@ def obtener_factura(factura_id: int):
         if factura.id == factura_id:
             return factura
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Factura no encontrada")
+
+class TransaccionBase(BaseModel):
+    cantidad: int
+    vr_unitario: float
+    descripcion: str
+
+class FacturaCreate(BaseModel):
+    fecha: date
+    cliente_id: int
+    transacciones: List[TransaccionBase] = []
+
+@app.post("/facturas", response_model=Factura, status_code=status.HTTP_201_CREATED)
+def crear_factura(factura_data: FacturaCreate):
+    # Verificar que el cliente existe
+    cliente_existe = False
+    for cliente in lista_clientes:
+        if cliente.id == factura_data.cliente_id:
+            cliente_existe = True
+            break
+    if not cliente_existe:
+        raise HTTPException(status_code=404, detail="Cliente no encontrado")
+    
+    nueva_factura = Factura(
+        id=len(lista_facturas) + 1,
+        fecha=factura_data.fecha,
+        cliente_id=factura_data.cliente_id
+    )
+    lista_facturas.append(nueva_factura)
+    
+    for trans_data in factura_data.transacciones:
+        nueva_trans = Transaccion(
+            id=len(lista_transacciones) + 1,
+            cantidad=trans_data.cantidad,
+            vr_unitario=trans_data.vr_unitario,
+            descripcion=trans_data.descripcion,
+            factura_id=nueva_factura.id
+        )
+        lista_transacciones.append(nueva_trans)
+    
+    return nueva_factura
