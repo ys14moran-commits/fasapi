@@ -2,8 +2,16 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date
+from fastapi import FastAPI
+from routers import clientes_router
 
 app = FastAPI()
+
+app.include_router(clientes_router)
+
+@app.get("/")
+def root():
+    return {"message": "API funcionando"}
 
 class Cliente(BaseModel):
     id: int
