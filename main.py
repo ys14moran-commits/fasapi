@@ -106,3 +106,20 @@ def crear_factura(factura_data: FacturaCreate):
         lista_transacciones.append(nueva_trans)
     
     return nueva_factura
+
+class TransaccionResponse(BaseModel):
+    id: int
+    cantidad: int
+    vr_unitario: float
+    descripcion: str
+    factura_id: int
+    total: float = 0.0
+
+@app.get("/transacciones", response_model=List[TransaccionResponse])
+def listar_transacciones():
+    transacciones_con_total = []
+    for trans in lista_transacciones:
+        trans_dict = trans.dict()
+        trans_dict["total"] = trans.cantidad * trans.vr_unitario
+        transacciones_con_total.append(TransaccionResponse(**trans_dict))
+    return transacciones_con_total
