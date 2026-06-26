@@ -49,7 +49,7 @@ class TransaccionResponse(BaseModel):
 
 lista_clientes = [
     Cliente(id=1, nombre="Ladi", email="ladi@gmail.com", edad=22),
-    Cliente(id=2, nombre="Luis", email="luis@gmail.com", edad=19),
+    Cliente(id=2, nombre="Luis", email="luis2@gmail.com", edad=19),
     Cliente(id=3, nombre="Ana", email="ana@gmail.com", edad=23)
 ]
 
