@@ -2,4 +2,4 @@ Buenas profesor aqui presento el proyecto de fastapi con las indicaciones echas 
 
 Este Api tiene la funcion de buscar, crear, eliminar y actualizar los datos.
 
-Videro de la sustentacion: https://screenrec.com/share/OZNW7m2oR9
+Video de la sustentacion: https://screenrec.com/share/OZNW7m2oR9
